@@ -142,7 +142,6 @@ class DoubleDQN:
         eval_act_index = batch_memory[:, self.n_features].astype(int)
         reward = batch_memory[:, self.n_features + 1]
 
-        print(self.double_q)
         if self.double_q:
             max_act4next = np.argmax(q_eval4next, axis=1)        # the action that brings the highest value is evaluated by q_eval
             selected_q_next = q_next[batch_index, max_act4next]  # Double DQN, select q_next depending on above actions
