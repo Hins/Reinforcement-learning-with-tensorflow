@@ -144,6 +144,7 @@ class DoubleDQN:
         if self.double_q:
             max_act4next = np.argmax(q_eval4next, axis=1)        # the action that brings the highest value is evaluated by q_eval
             selected_q_next = q_next[batch_index, max_act4next]  # Double DQN, select q_next depending on above actions
+            print(selected_q_next)
         else:
             selected_q_next = np.max(q_next, axis=1)    # the natural DQN
 
