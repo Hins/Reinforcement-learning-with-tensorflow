@@ -134,7 +134,7 @@ class DoubleDQN:
             feed_dict={self.s_: batch_memory[:, -self.n_features:],    # next observation
                        self.s: batch_memory[:, -self.n_features:]})    # next observation
         q_eval = self.sess.run(self.q_eval, {self.s: batch_memory[:, :self.n_features]})
-        print("q_next shape is " + q_next.shape.tolist())
+        print("q_next shape is %s", q_next.shape)
 
         # print("evaluation network calculate complete")
         q_target = q_eval.copy()
