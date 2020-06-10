@@ -135,6 +135,7 @@ class DoubleDQN:
                        self.s: batch_memory[:, -self.n_features:]})    # next observation
         q_eval = self.sess.run(self.q_eval, {self.s: batch_memory[:, :self.n_features]})
 
+        print("evaluation network calculate complete")
         q_target = q_eval.copy()
 
         batch_index = np.arange(self.batch_size, dtype=np.int32)
