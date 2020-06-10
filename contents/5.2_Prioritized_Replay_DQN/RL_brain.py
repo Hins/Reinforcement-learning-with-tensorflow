@@ -107,6 +107,7 @@ class Memory(object):  # stored as ( s, a, r, s_ ) in SumTree
         self.tree.add(max_p, transition)   # set the max p for new p
 
     def sample(self, n):
+        # n is batch size
         b_idx, b_memory, ISWeights = np.empty((n,), dtype=np.int32), np.empty((n, self.tree.data[0].size)), np.empty((n, 1))
         pri_seg = self.tree.total_p / n       # priority segment
         self.beta = np.min([1., self.beta + self.beta_increment_per_sampling])  # max = 1
@@ -253,6 +254,7 @@ class DQNPrioritizedReplay:
             sample_index = np.random.choice(self.memory_size, size=self.batch_size)
             batch_memory = self.memory[sample_index, :]
 
+        # just inference
         q_next, q_eval = self.sess.run(
                 [self.q_next, self.q_eval],
                 feed_dict={self.s_: batch_memory[:, -self.n_features:],
@@ -265,6 +267,7 @@ class DQNPrioritizedReplay:
 
         q_target[batch_index, eval_act_index] = reward + self.gamma * np.max(q_next, axis=1)
 
+        # train
         if self.prioritized:
             _, abs_errors, self.cost = self.sess.run([self._train_op, self.abs_errors, self.loss],
                                          feed_dict={self.s: batch_memory[:, :self.n_features],

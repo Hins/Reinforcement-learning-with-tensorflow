@@ -16,8 +16,8 @@ import tensorflow as tf
 
 # reproducible
 np.random.seed(1)
-tf.set_random_seed(1)
-
+#tf.set_random_seed(1)
+tf.random.set_seed(1)
 
 class PolicyGradient:
     def __init__(
