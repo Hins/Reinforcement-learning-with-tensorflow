@@ -65,9 +65,10 @@ def train(RL):
         total_steps += 1
     return RL.cost_his, acc_r
 
-c_natural, r_natural = train(natural_DQN)
+#c_natural, r_natural = train(natural_DQN)
 c_dueling, r_dueling = train(dueling_DQN)
 
+"""
 plt.figure(1)
 plt.plot(np.array(c_natural), c='r', label='natural')
 plt.plot(np.array(c_dueling), c='b', label='dueling')
@@ -75,6 +76,7 @@ plt.legend(loc='best')
 plt.ylabel('cost')
 plt.xlabel('training steps')
 plt.grid()
+"""
 
 plt.figure(2)
 plt.plot(np.array(r_natural), c='r', label='natural')
