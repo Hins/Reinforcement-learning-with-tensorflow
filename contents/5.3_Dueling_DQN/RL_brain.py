@@ -98,6 +98,8 @@ class DuelingDQN:
                 tf.random_normal_initializer(0., 0.3), tf.constant_initializer(0.1)  # config of layers
 
             self.q_eval, advantage = build_layers(self.s, c_names, n_l1, w_initializer, b_initializer)
+            if advantage is None:
+                print("advantage is None")
             print("q_eval shape is %s, advantage shape is %s", (self.q_eval.get_shape(), advantage.get_shape()))
 
         with tf.variable_scope('loss'):
