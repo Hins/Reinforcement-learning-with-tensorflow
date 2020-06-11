@@ -50,9 +50,11 @@ class Actor(object):
         self.t_replace_counter = 0
 
         with tf.variable_scope('Actor'):
+            # actor evaluation network
             # input s, output a
             self.a = self._build_net(S, scope='eval_net', trainable=True)
 
+            # actor target network
             # input s_, output a, get a_ for critic
             self.a_ = self._build_net(S_, scope='target_net', trainable=False)
 

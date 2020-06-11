@@ -89,6 +89,9 @@ class DuelingDQN:
 
             return out
 
+        def get_advantage():
+            return self.A
+
         # ------------------ build evaluate_net ------------------
         self.s = tf.placeholder(tf.float32, [None, self.n_features], name='s')  # input
         self.q_target = tf.placeholder(tf.float32, [None, self.n_actions], name='Q_target')  # for calculating loss
