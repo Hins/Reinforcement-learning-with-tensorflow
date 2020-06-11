@@ -113,7 +113,7 @@ class DuelingDQN:
         with tf.variable_scope('target_net'):
             c_names = ['target_net_params', tf.GraphKeys.GLOBAL_VARIABLES]
 
-            self.q_next, advantage = build_layers(self.s_, c_names, n_l1, w_initializer, b_initializer)
+            self.q_next, value, advantage = build_layers(self.s_, c_names, n_l1, w_initializer, b_initializer)
 
     def store_transition(self, s, a, r, s_):
         if not hasattr(self, 'memory_counter'):
