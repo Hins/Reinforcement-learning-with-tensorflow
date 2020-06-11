@@ -57,8 +57,6 @@ def train(RL):
 
         if total_steps > MEMORY_SIZE:
             RL.learn()
-            print("advantage is ")
-            print(RL.get_advantage())
 
         if total_steps-MEMORY_SIZE > 15000:
             break
