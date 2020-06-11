@@ -203,7 +203,7 @@ state_dim = env.observation_space.shape[0]
 action_dim = env.action_space.shape[0]
 action_bound = env.action_space.high
 print("action_bound is ")
-print(action_bound)
+print(action_bound.shape)
 
 # all placeholder for tf
 with tf.name_scope('S'):
