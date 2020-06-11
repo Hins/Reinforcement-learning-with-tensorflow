@@ -82,13 +82,13 @@ class DuelingDQN:
 
                 with tf.variable_scope('Q'):
                     out = self.V + (self.A - tf.reduce_mean(self.A, axis=1, keep_dims=True))     # Q = V(s) + A(s,a)
-                return out, self.A
+                return out, self.V, self.A
             else:
                 with tf.variable_scope('Q'):
                     w2 = tf.get_variable('w2', [n_l1, self.n_actions], initializer=w_initializer, collections=c_names)
                     b2 = tf.get_variable('b2', [1, self.n_actions], initializer=b_initializer, collections=c_names)
                     out = tf.matmul(l1, w2) + b2
-                return out, None
+                return out, None, None
 
         # ------------------ build evaluate_net ------------------
         self.s = tf.placeholder(tf.float32, [None, self.n_features], name='s')  # input
@@ -98,10 +98,10 @@ class DuelingDQN:
                 ['eval_net_params', tf.GraphKeys.GLOBAL_VARIABLES], 20, \
                 tf.random_normal_initializer(0., 0.3), tf.constant_initializer(0.1)  # config of layers
 
-            self.q_eval, advantage = build_layers(self.s, c_names, n_l1, w_initializer, b_initializer)
+            self.q_eval, value, advantage = build_layers(self.s, c_names, n_l1, w_initializer, b_initializer)
             if advantage is None:
                 print("advantage is None")
-            print("q_eval shape is %s, advantage shape is %s", (self.q_eval.get_shape(), advantage.get_shape()))
+            print("q_eval shape is %s, value shape is %s, advantage shape is %s", (self.q_eval.get_shape(), value.get_shape(), advantage.get_shape()))
 
         with tf.variable_scope('loss'):
             self.loss = tf.reduce_mean(tf.squared_difference(self.q_target, self.q_eval))
