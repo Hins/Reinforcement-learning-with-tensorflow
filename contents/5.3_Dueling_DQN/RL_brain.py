@@ -87,10 +87,7 @@ class DuelingDQN:
                     b2 = tf.get_variable('b2', [1, self.n_actions], initializer=b_initializer, collections=c_names)
                     out = tf.matmul(l1, w2) + b2
 
-            return out
-
-        def get_advantage():
-            return self.A
+            return out, self.A
 
         # ------------------ build evaluate_net ------------------
         self.s = tf.placeholder(tf.float32, [None, self.n_features], name='s')  # input
@@ -100,7 +97,8 @@ class DuelingDQN:
                 ['eval_net_params', tf.GraphKeys.GLOBAL_VARIABLES], 20, \
                 tf.random_normal_initializer(0., 0.3), tf.constant_initializer(0.1)  # config of layers
 
-            self.q_eval = build_layers(self.s, c_names, n_l1, w_initializer, b_initializer)
+            self.q_eval, advantage = build_layers(self.s, c_names, n_l1, w_initializer, b_initializer)
+            print("q_eval shape is %s, advantage shape is %s", (self.q_eval.get_shape(), advantage.get_shape()))
 
         with tf.variable_scope('loss'):
             self.loss = tf.reduce_mean(tf.squared_difference(self.q_target, self.q_eval))
@@ -112,7 +110,7 @@ class DuelingDQN:
         with tf.variable_scope('target_net'):
             c_names = ['target_net_params', tf.GraphKeys.GLOBAL_VARIABLES]
 
-            self.q_next = build_layers(self.s_, c_names, n_l1, w_initializer, b_initializer)
+            self.q_next, advantage = build_layers(self.s_, c_names, n_l1, w_initializer, b_initializer)
 
     def store_transition(self, s, a, r, s_):
         if not hasattr(self, 'memory_counter'):
