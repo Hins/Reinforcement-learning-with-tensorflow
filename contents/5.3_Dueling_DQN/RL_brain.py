@@ -43,7 +43,7 @@ class DuelingDQN:
         self.epsilon = 0 if e_greedy_increment is not None else self.epsilon_max
 
         self.dueling = dueling      # decide to use dueling DQN or not
-        print("self.dueling is %s", (dueling))
+        print("self.dueling is %s", dueling)
 
         self.learn_step_counter = 0
         self.memory = np.zeros((self.memory_size, n_features*2+2))
