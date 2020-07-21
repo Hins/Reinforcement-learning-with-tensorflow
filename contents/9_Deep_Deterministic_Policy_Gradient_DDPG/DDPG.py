@@ -53,6 +53,8 @@ class Actor(object):
             # actor evaluation network
             # input s, output a
             self.a = self._build_net(S, scope='eval_net', trainable=True)
+            print("a shape is ")
+            print(self.a.get_shape())
 
             # actor target network
             # input s_, output a, get a_ for critic
@@ -93,6 +95,7 @@ class Actor(object):
 
     def choose_action(self, s):
         s = s[np.newaxis, :]    # single state
+        tmp = self.sess.run(self.a, feed_dict={S: s})
         return self.sess.run(self.a, feed_dict={S: s})[0]  # single action
 
     def add_grad_to_graph(self, a_grads):
@@ -201,7 +204,12 @@ env.seed(1)
 
 state_dim = env.observation_space.shape[0]
 action_dim = env.action_space.shape[0]
+print("action_dim is ")
+print(action_dim)
 action_bound = env.action_space.high
+print("action_bound shape is ")
+print(action_bound.shape)
+print("action_bound is %d", action_bound)
 
 # all placeholder for tf
 with tf.name_scope('S'):

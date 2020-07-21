@@ -56,17 +56,18 @@ class PPONet(object):
         self.update_oldpi_op = [oldp.assign(p) for p, oldp in zip(pi_params, oldpi_params)]
 
         self.tfa = tf.placeholder(tf.int32, [None, ], 'action')
-        self.tfadv = tf.placeholder(tf.float32, [None, 1], 'advantage')
+        # leverage tfadv from self.advantage
+        # self.tfadv = tf.placeholder(tf.float32, [None, 1], 'advantage')
 
-        a_indices = tf.stack([tf.range(tf.shape(self.tfa)[0], dtype=tf.int32), self.tfa], axis=1)
+        a_indices = tf.stack([tf.range(tf.shape(self.advantage)[0], dtype=tf.int32), self.advantage], axis=1)
         pi_prob = tf.gather_nd(params=self.pi, indices=a_indices)   # shape=(None, )
         oldpi_prob = tf.gather_nd(params=oldpi, indices=a_indices)  # shape=(None, )
         ratio = pi_prob/oldpi_prob
-        surr = ratio * self.tfadv                       # surrogate loss
+        surr = ratio * self.advantage                       # surrogate loss
 
         self.aloss = -tf.reduce_mean(tf.minimum(        # clipped surrogate objective
             surr,
-            tf.clip_by_value(ratio, 1. - EPSILON, 1. + EPSILON) * self.tfadv))
+            tf.clip_by_value(ratio, 1. - EPSILON, 1. + EPSILON) * self.advantage))
 
         self.atrain_op = tf.train.AdamOptimizer(A_LR).minimize(self.aloss)
         self.sess.run(tf.global_variables_initializer())
@@ -80,9 +81,9 @@ class PPONet(object):
                 data = [QUEUE.get() for _ in range(QUEUE.qsize())]      # collect data from all workers
                 data = np.vstack(data)
                 s, a, r = data[:, :S_DIM], data[:, S_DIM: S_DIM + 1].ravel(), data[:, -1:]
-                adv = self.sess.run(self.advantage, {self.tfs: s, self.tfdc_r: r})
+                # adv = self.sess.run(self.advantage, {self.tfs: s, self.tfdc_r: r})
                 # update actor and critic in a update loop
-                [self.sess.run(self.atrain_op, {self.tfs: s, self.tfa: a, self.tfadv: adv}) for _ in range(UPDATE_STEP)]
+                [self.sess.run(self.atrain_op, {self.tfs: s, self.tfa: a, self.tfdc_r: r}) for _ in range(UPDATE_STEP)]
                 [self.sess.run(self.ctrain_op, {self.tfs: s, self.tfdc_r: r}) for _ in range(UPDATE_STEP)]
                 UPDATE_EVENT.clear()        # updating finished
                 GLOBAL_UPDATE_COUNTER = 0   # reset counter
